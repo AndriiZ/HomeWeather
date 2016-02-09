@@ -196,11 +196,6 @@ SET TERM ; ^
 
 SET TERM ^ ;
 
-ALTER PROCEDURE GETDATEFROMMNEMONIC (
-    MNEMONIC VARCHAR(16) = null)
-RETURNS (
-    STARTTIME TIMESTAMP)
-AS
 begin
  if (mnemonic is null) then
     mnemonic = 'hour';
