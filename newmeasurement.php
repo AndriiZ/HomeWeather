@@ -16,20 +16,23 @@ $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $sth = $dbh->prepare('execute procedure NEW_MEASUREMENT(?,?,?)');
 
-$humidity = $_POST['humidity'];
-$temperature = $_POST['temperature'];
 $uuid = $_POST['uuid'];
 
-$sth->bindParam(3, $humidity);
-$sth->bindValue(2, "humidity");
-$sth->bindParam(1, $uuid);
+$allowedMeasurements = array('humidity', 'temperature', 'pressure');
 
-$sth->execute();
-
-$sth->bindParam(3, $temperature);
-$sth->bindValue(2, "temperature");
-$sth->bindParam(1, $uuid);
-$sth->execute();
+foreach($allowedMeasurements as $measurmentType)
+{
+  if (!array_key_exists($measurmentType, $_POST))
+     continue;
+  $measurement = $_POST[$measurmentType];
+  if (isset($measurement))
+  {
+     $sth->bindParam(3, $measurement);
+     $sth->bindValue(2, $measurmentType);
+     $sth->bindParam(1, $uuid);
+     $sth->execute();
+  }
+}
 
 $dbh->commit();
 

@@ -29,16 +29,30 @@
  }
 
   $mode = $_GET['mode'];
-  $measurements = array('temperature', 'humidity');
+
+  $measurements = array('AF993B68-0EF7-4842-8A36-8FD03A695456' => array('temperature', 'humidity'),
+			'70528E8C-3467-48CD-BDD4-61D509839397' => array('temperature', 'pressure'),
+			'1A57F3B1-252F-4332-872D-C23DA809F287' => array('temperature', 'humidity'));
+
+  $sensors = array('AF993B68-0EF7-4842-8A36-8FD03A695456' => 'mainroom',
+                        '70528E8C-3467-48CD-BDD4-61D509839397' => 'lodzhiabmp180',
+                        '1A57F3B1-252F-4332-872D-C23DA809F287' => 'lodzhiadht22');
+
+
   $stmt = getStmtHandle(getDbHandle());
 
-  $rows = array("mode" => $mode, "measurements" => $measurements);
+  $rows = array("mode" => $mode, "sensors" => array_values($sensors));
 
-  foreach($measurements as  $measurement)
+  foreach($measurements as $key=>$value)
   {
-    $data = readMeasurement($stmt, 'AF993B68-0EF7-4842-8A36-8FD03A695456', $measurement, $mode);
-    $rows[$measurement] = $data;
-    $rows[$measurement."_count"] = count($data);
+    $uuid = $key;
+    $sensor = $sensors[$key];
+    foreach($value as $measurement)
+    {
+      $data = readMeasurement($stmt, $key, $measurement, $mode);
+      $rows[$sensor."_".$measurement] = $data;
+      $rows[$sensor."_".$measurement."_count"] = count($data);
+    }
   }
 
   //ob_start("ob_gzhandler");

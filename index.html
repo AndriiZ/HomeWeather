@@ -9,8 +9,11 @@
 <body>
   <div id="all">
     <div id="current" style="float:left;width:20%">
-      Temperature   <span id="temperature"></span><br />
-      Humidity <span id="humidityDHT022"></span><br />
+      Temperature (main room) <span id="temperature"></span>°<br />
+      Humidity (main room) <span id="humidity"></span>%<br />
+      Pressure <span id="pressure"></span> mmHg<br />
+      Temperature (loggia) <span id="temperaturelog"></span>°<br />
+      Humidity (loggia) <span id="humiditylog"></span>%<br />
       Time  <span id="time"></span>
   <div>
   Select time range
@@ -35,6 +38,8 @@
     <div style="width:70%;" id="graph"></div>
     <div style="clear:both" />
     <div style="float:left;width:20%">&nbsp;</div>
+    <div id="room_graph" style="width:70%;"> </div>
+    <div id="bmpdht_graph" style="width:70%;"> </div>
     <div id="pressure_graph" style="width:70%;"> </div>
   </div>
  <div id="footer">

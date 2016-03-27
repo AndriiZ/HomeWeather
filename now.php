@@ -46,5 +46,7 @@ echo "Дані на $humiditytime";
 
 
 ?>
+
+<div><a href="/weather/">Графік</a></div>
 </body>
 </html>
