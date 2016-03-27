@@ -45,10 +45,10 @@ function requestDelta()
               chart1.series[1].addPoint(data.mainroom_humidity[i], false, true);
            chart1.redraw();
 
-           for(i=0; i<data.lodzhiadht22_humidity_count;i++)
-              chart2.series[0].addPoint(data.mainroom_humidity[i], false, true);
            for(i=0; i<data.lodzhiadht22_temperature_count;i++)
-              chart2.series[1].addPoint(data.mainroom_temperature[i], false, true);
+              chart2.series[0].addPoint(data.lodzhiadht22_temperature[i], false, true);
+           for(i=0; i<data.lodzhiadht22_humidity_count;i++)
+              chart2.series[1].addPoint(data.lodzhiadht22_humidity[i], false, true);
            for(i=0; i<data.lodzhiabmp180_temperature_count;i++)
               chart2.series[2].addPoint(data.lodzhiabmp180_temperature[i], false, true);
             chart2.redraw();
@@ -74,8 +74,8 @@ function requestData()
     {
        chart1.series[0].setData(data.mainroom_temperature);
        chart1.series[1].setData(data.mainroom_humidity);
-       chart2.series[0].setData(data.lodzhiadht22_humidity);
-       chart2.series[1].setData(data.lodzhiadht22_temperature);
+       chart2.series[0].setData(data.lodzhiadht22_temperature);
+       chart2.series[1].setData(data.lodzhiadht22_humidity);
        chart2.series[2].setData(data.lodzhiabmp180_temperature);
        chart3.series[0].setData(multiplyPressure(data.lodzhiabmp180_pressure, kPaTommHgMultiplier));
        drawCurrent(data);
@@ -109,7 +109,7 @@ chart1 = new Highcharts.Chart({
         }
      },
      title: {
-        text: 'Monitoring'
+        text: 'Main room monitoring'
      },
     tooltip: {
       shared: true
@@ -144,7 +144,7 @@ chart2 = new Highcharts.Chart({
         type: 'spline'
      },
      title: {
-        text: 'Monitoring'
+        text: 'Loggia monitoring'
      },
     tooltip: {
       shared: true
