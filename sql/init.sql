@@ -2,8 +2,8 @@ SET SQL DIALECT 3;
 
 SET NAMES UTF8;
 
-CREATE DATABASE 'WEATHER'
-USER 'WEATHER'
+CREATE DATABASE '127.0.0.1:WEATHER'
+USER 'WEATHER' PASSWORD 'ololo321'
 PAGE_SIZE 16384
 DEFAULT CHARACTER SET UTF8 COLLATION UTF8;
 
@@ -14,7 +14,11 @@ DEFAULT CHARACTER SET UTF8 COLLATION UTF8;
 /******************************************************************************/
 
 CREATE GENERATOR GEN_MEASUREMENTTYPES_ID;
+SET GENERATOR GEN_MEASUREMENTTYPES_ID TO 3;
+
 CREATE GENERATOR GEN_SENSORS_ID;
+SET GENERATOR GEN_SENSORS_ID TO 4;
+
 
 
 /******************************************************************************/
@@ -26,6 +30,19 @@ CREATE GENERATOR GEN_SENSORS_ID;
 SET TERM ^ ;
 
 CREATE PROCEDURE GETDATEFROMMNEMONIC (
+    MNEMONIC VARCHAR(16) = null)
+RETURNS (
+    STARTTIME TIMESTAMP)
+AS
+BEGIN
+  SUSPEND;
+END^
+
+
+
+
+
+CREATE PROCEDURE GETDATEFROMMNEMONIC_OLD (
     MNEMONIC VARCHAR(16) = null)
 RETURNS (
     STARTTIME TIMESTAMP)
@@ -204,6 +221,41 @@ AS
 begin
  if (mnemonic is null) then
     mnemonic = 'hour';
+
+  STARTTIME = case mnemonic
+    WHEN 'today' then current_date
+    WHEN 'hour' then dateadd(hour, -1, current_timestamp)
+    WHEN '3hour' then dateadd(hour, -3, current_timestamp)
+    WHEN 'dbn' then dateadd(day, -1, current_timestamp)
+    WHEN '3day' then dateadd(day, -3, current_timestamp)
+    WHEN 'week' then
+        CASE  EXTRACT(weekday from current_date)
+            WHEN 0 THEN dateadd(day, -6, current_date)
+            ELSE dateadd(day, -(EXTRACT(weekday from current_date)-1), current_date)
+        END
+    WHEN 'wtn' then dateadd(week, -1, current_timestamp)
+    WHEN 'mtn' then dateadd(month, -1, current_timestamp)
+    WHEN 'month' then dateadd(day, -(EXTRACT(DAY from current_date)-1), current_date)
+    WHEN 'ytn' then dateadd(year, -1, current_timestamp)
+    WHEN 'year' then dateadd(day, -(EXTRACT(YEARDAY from current_date)), current_date)
+    end;
+
+    if (starttime IS NULL) then
+       IF (mnemonic similar to '[0-9]+') THEN
+          STARTTIME = dateadd(second, 1+CAST(:mnemonic as bigint)/1000 , timestamp '1970-01-01 02:00:00');
+
+  suspend;
+end^
+
+
+ALTER PROCEDURE GETDATEFROMMNEMONIC_OLD (
+    MNEMONIC VARCHAR(16) = null)
+RETURNS (
+    STARTTIME TIMESTAMP)
+AS
+begin
+ if (mnemonic is null) then
+    mnemonic = 'hour';
  if (mnemonic = 'today') then
     SELECT current_date from rdb$database INTO :STARTTIME;
 
@@ -334,4 +386,3 @@ end^
 
 
 SET TERM ; ^
-
