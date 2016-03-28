@@ -23,8 +23,8 @@ function drawCurrent(data)
     }
     if (data.lodzhiabmp180_temperature_count > 0)
     {
-	document.querySelector("span#temperaturelog").innerHTML = 
-		(data.lodzhiabmp180_temperature[data.lodzhiabmp180_temperature_count-1][1] + data.lodzhiadht22_temperature[data.lodzhiadht22_temperature_count-1][1]) / 2;
+	var currentTemp = (data.lodzhiabmp180_temperature[data.lodzhiabmp180_temperature_count-1][1] + data.lodzhiadht22_temperature[data.lodzhiadht22_temperature_count-1][1]) / 2;
+	document.querySelector("span#temperaturelog").innerHTML = currentTemp.toFixed(2);
 	document.querySelector("span#humiditylog").innerHTML = data.lodzhiadht22_humidity[data.lodzhiadht22_humidity_count-1][1];
     }
 
@@ -53,8 +53,9 @@ function requestDelta()
               chart2.series[2].addPoint(data.lodzhiabmp180_temperature[i], false, true);
             chart2.redraw();
 
+	   multiplyPressure(data.lodzhiabmp180_pressure, kPaTommHgMultiplier);
            for(i=0; i<data.lodzhiabmp180_pressure_count;i++)
-              chart3.series[0].addPoint((kPaTommHgMultiplier*data.lodzhiabmp180_pressure[i]).toFixed(2), false, true);
+              chart3.series[0].addPoint(data.lodzhiabmp180_pressure[i].toFixed(2), false, true);
           chart3.redraw();
 	  drawCurrent(data);
     }
