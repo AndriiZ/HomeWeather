@@ -1,7 +1,7 @@
 <?php
   function getDbHandle()
   {
-    $dbname = '/media/WD_MyBook_1/db/fdb/weather.fdb';
+    $dbname = 'WEATHER';
     $dbuser = 'WEATHER';
     $dbpassword = 'ololo321';
     $host = gethostbyname('localhost');

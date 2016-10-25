@@ -1,8 +1,33 @@
 <?php
 
+  function getMeasurementFromPost($measurement)
+  {
+     return array_key_exists($measurement, $_POST) ?  $_POST[$measurement] : NULL;
+  }
+
+  function IsNullOrEmptyString($str){
+      return (!isset($str) || trim($str)==='');
+  }
+
+  function writeMeasurementToFile()
+  { 
+    $guid =  getMeasurementFromPost("uuid");
+    $temperature =  floatval(getMeasurementFromPost("temperature"));
+    $humidity =  floatval(getMeasurementFromPost("humidity"));
+    $pressure =  floatval(getMeasurementFromPost("pressure"));
+
+    if (IsNullOrEmptyString($guid)) return;
+
+    $data = array("temperature" => $temperature, "humidity" => $humidity,
+         "guid" => $guid, "pressure" => $pressure);
+     file_put_contents("/tmp/".$data["guid"].".json", json_encode($data));
+  }
+
+ writeMeasurementToFile();
+
 header("Content-Type: text/plain");
 
-$dbname = '/media/WD_MyBook_1/db/fdb/weather.fdb';
+$dbname = 'WEATHER';
 
 $dbuser = 'WEATHER';
 

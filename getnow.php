@@ -1,5 +1,8 @@
 <?php
-$dbname = '/media/WD_MyBook_1/db/fdb/weather.fdb';
+
+function getDataFromDB()
+{
+$dbname = 'WEATHER';
 
 $dbuser = 'WEATHER';
 
@@ -28,8 +31,23 @@ foreach($dbh->query("select lm.measurementtime, lm.measurementvalue from LAST_ME
    $temperaturetime = $row['MEASUREMENTTIME'];
 };
 
-
  $rows = array("temperature" => $temperature, "humidity" => $humidity, "resulttime" => $temperaturetime);
+ return $rows;
+}
+
+function getDataFromFile()
+{
+  $filename = "/tmp/"."AF993B68-0EF7-4842-8A36-8FD03A695456".".json";
+  if (!file_exists($filename)) return NULL;
+  $data = json_decode(file_get_contents($filename), TRUE);
+  $data["resulttime"] =  date ("F d Y H:i:s", filemtime($filename));
+  unset($data["guid"]);
+  return $data;
+}
+
+$rows = getDataFromFile(); 
+if ($rows === NULL)
+  $rows = getDataFromDB();
 
  //ob_start("ob_gzhandler");
  ob_start();
