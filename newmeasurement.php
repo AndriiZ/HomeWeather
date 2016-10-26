@@ -25,6 +25,7 @@
 
  writeMeasurementToFile();
 
+set_time_limit(10);
 header("Content-Type: text/plain");
 
 $dbname = 'WEATHER';
