@@ -1,6 +1,6 @@
 <?php
 
-function getDataFromDB()
+function getDataFromDB($guid='AF993B68-0EF7-4842-8A36-8FD03A695456')
 {
 $dbname = 'WEATHER';
 
@@ -19,13 +19,13 @@ $temperature=0;
 $humiditytime = null;
 $temperaturetime = null;
 
-foreach($dbh->query("select lm.measurementtime, lm.measurementvalue from LAST_MEASUREMENT('AF993B68-0EF7-4842-8A36-8FD03A695456', 'humidity') lm") as $row)
+foreach($dbh->query("select lm.measurementtime, lm.measurementvalue from LAST_MEASUREMENT('$guid', 'humidity') lm") as $row)
 {
    $humidity = $row['MEASUREMENTVALUE'];
    $humiditytime = $row['MEASUREMENTTIME'];
 };
 
-foreach($dbh->query("select lm.measurementtime, lm.measurementvalue from LAST_MEASUREMENT('AF993B68-0EF7-4842-8A36-8FD03A695456', 'temperature') lm") as $row)
+foreach($dbh->query("select lm.measurementtime, lm.measurementvalue from LAST_MEASUREMENT('$guid', 'temperature') lm") as $row)
 {
    $temperature = $row['MEASUREMENTVALUE'];
    $temperaturetime = $row['MEASUREMENTTIME'];
@@ -35,9 +35,9 @@ foreach($dbh->query("select lm.measurementtime, lm.measurementvalue from LAST_ME
  return $rows;
 }
 
-function getDataFromFile()
+function getDataFromFile($guid='AF993B68-0EF7-4842-8A36-8FD03A695456')
 {
-  $filename = "/tmp/"."AF993B68-0EF7-4842-8A36-8FD03A695456".".json";
+  $filename = "/tmp/$guid.json";
   if (!file_exists($filename)) return NULL;
   $data = json_decode(file_get_contents($filename), TRUE);
   $data["resulttime"] =  date ("F d Y H:i:s", filemtime($filename));

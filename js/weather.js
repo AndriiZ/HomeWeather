@@ -1,4 +1,6 @@
 (function(window, document){
+  var kPaTommHgMultiplier =  7.50061561303;
+
   function callAjax(url, callback, before, after){
     var xmlhttp;
     xmlhttp = new XMLHttpRequest();
@@ -13,7 +15,7 @@
     xmlhttp.send();
   }
 
-  function saveToLocalStorage(humidity, temperature, resulttime) {
+  function saveToLocalStorage(humidity, temperature, resulttime, loggiadht22, loggiabmp180) {
     var myStorage = window.localStorage;
     myStorage.setItem('humidity', humidity);
     myStorage.setItem('temperature', temperature);
@@ -25,19 +27,44 @@
      var myStorage = window.localStorage;
      showData(  myStorage.getItem('humidity'), 
 		myStorage.getItem('temperature'), 
-		myStorage.getItem('resulttime'));
+		myStorage.getItem('resulttime')
+		);
   }
 
-  function showData(humidity, temperature, resulttime) {
+  function showData(humidity, temperature, resulttime, loggiadht22, loggiabmp180) {
      document.getElementById('humidity').innerHTML = humidity;
      document.getElementById('temperature').innerHTML = temperature;
      document.getElementById('resulttime').innerHTML = resulttime;
+
+     var currentTemp = 0;
+     var temperaturesCount = 1;
+
+     if (loggiadht22 != null)
+     {
+        document.getElementById('humidityloggia').innerHTML = loggiadht22.humidity;
+        currentTemp +=  loggiadht22.temperature;
+     }
+     var pressure = 100;
+     if (loggiabmp180 != null)
+     {
+        currentTemp +=  loggiabmp180.temperature;
+        pressure = loggiabmp180.pressure;
+        temperaturesCount++;
+     }
+     currentTemp = currentTemp / temperaturesCount;
+
+     document.getElementById('temperatureloggia').innerHTML = currentTemp.toFixed(2);
+     document.getElementById('pressureHg').innerHTML = (pressure*kPaTommHgMultiplier).toFixed(0);
+     document.getElementById('pressureKPa').innerHTML = pressure.toFixed(2);
   }
 
   function cb(response) {
-     var result = JSON.parse(response);
-     showData(result.humidity, result.temperature, result.resulttime);
-     saveToLocalStorage(result.humidity, result.temperature, result.resulttime);
+     var data = JSON.parse(response);
+     var result = data.main;
+     var loggiadht22 = data.loggiadht22;
+     var loggiabmp180 = data.loggiabmp180;
+     showData(result.humidity, result.temperature, result.resulttime, loggiadht22, loggiabmp180);
+     saveToLocalStorage(result.humidity, result.temperature, result.resulttime, loggiadht22, loggiabmp180);
   }
 
   function openModal() {
