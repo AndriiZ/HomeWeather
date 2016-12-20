@@ -42,14 +42,18 @@
      if (loggiadht22 != null)
      {
         document.getElementById('humidityloggia').innerHTML = loggiadht22.humidity;
-        currentTemp +=  loggiadht22.temperature;
+        if (loggiadht22.temperature > -271)
+          currentTemp +=  loggiadht22.temperature;
      }
      var pressure = 100;
      if (loggiabmp180 != null)
      {
         currentTemp +=  loggiabmp180.temperature;
-        pressure = loggiabmp180.pressure;
-        temperaturesCount++;
+        if (loggiabmp180.pressure > -271)
+        {
+            pressure = loggiabmp180.pressure;
+            temperaturesCount++;
+        }
      }
      currentTemp = currentTemp / temperaturesCount;
 
